@@ -1,5 +1,5 @@
 Assembler report for project
-Wed Dec 10 13:26:01 2025
+Wed Dec 10 13:46:18 2025
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -37,7 +37,7 @@ applicable agreement for further details.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Wed Dec 10 13:26:01 2025 ;
+; Assembler Status      ; Successful - Wed Dec 10 13:46:18 2025 ;
 ; Revision Name         ; project                               ;
 ; Top-level Entity Name ; top                                   ;
 ; Family                ; Cyclone V                             ;
@@ -92,8 +92,8 @@ applicable agreement for further details.
 ; Option         ; Setting                                                                   ;
 +----------------+---------------------------------------------------------------------------+
 ; Device         ; 5CEBA4F23C7                                                               ;
-; JTAG usercode  ; 0x0086EDB2                                                                ;
-; Checksum       ; 0x0086EDB2                                                                ;
+; JTAG usercode  ; 0x0120D5B8                                                                ;
+; Checksum       ; 0x0120D5B8                                                                ;
 +----------------+---------------------------------------------------------------------------+
 
 
@@ -116,13 +116,13 @@ Info: Running Quartus II 64-Bit Assembler
     Info: programming logic devices manufactured by Altera and sold by 
     Info: Altera or its authorized distributors.  Please refer to the 
     Info: applicable agreement for further details.
-    Info: Processing started: Wed Dec 10 13:25:55 2025
+    Info: Processing started: Wed Dec 10 13:46:10 2025
 Info: Command: quartus_asm project
 Info (115030): Assembler is generating device programming files
 Info: Quartus II 64-Bit Assembler was successful. 0 errors, 0 warnings
-    Info: Peak virtual memory: 4735 megabytes
-    Info: Processing ended: Wed Dec 10 13:26:01 2025
-    Info: Elapsed time: 00:00:06
-    Info: Total CPU time (on all processors): 00:00:05
+    Info: Peak virtual memory: 4784 megabytes
+    Info: Processing ended: Wed Dec 10 13:46:18 2025
+    Info: Elapsed time: 00:00:08
+    Info: Total CPU time (on all processors): 00:00:08
 
 

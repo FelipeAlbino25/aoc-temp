@@ -193,6 +193,46 @@ set_global_assignment -name FITTER_EFFORT "FAST FIT"# These are the pin assignme
 
 # These are the pin assignments for the Altera DE0-CV
 
+
+
+
+
+
+
+
+
+# These are the pin assignments for the Altera DE0-CV
+
+
+
+
+
+
+
+
+
+# These are the pin assignments for the Altera DE0-CV
+
+
+
+
+
+
+
+
+
+# These are the pin assignments for the Altera DE0-CV
+
+
+
+
+
+
+
+
+
+# These are the pin assignments for the Altera DE0-CV
+
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CEBA4F23C7
 

@@ -1,7 +1,5 @@
 <?xml version="1.0" ?>
 <LOG_ROOT>
 	<PROJECT NAME="project">
-		<CBX_INST_ENTRY INSTANCE_NAME="|top|mem:ram|altsyncram:RAM_rtl_0" CBX_FILE_NAME="altsyncram_md22.tdf"/>
-		<CBX_INST_ENTRY INSTANCE_NAME="|top|mem:ram|altsyncram:RAM_rtl_1" CBX_FILE_NAME="altsyncram_md22.tdf"/>
 	</PROJECT>
 </LOG_ROOT>

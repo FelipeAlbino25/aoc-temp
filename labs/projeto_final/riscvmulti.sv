@@ -8,6 +8,27 @@ module riscvmulti (
     output  [3:0] WriteMask, 
     output logic  halt = 0); 
 
+    //  Contadores de instrução: Hardware Analysis
+    integer r_type = 0;
+    integer b_type = 0;
+    integer i_type = 0;
+    integer u_type = 0;
+    integer j_type = 0;
+    // wire isALUreg  =  (instr[6:0] == 7'b0110011); 
+    // wire isALUimm  =  (instr[6:0] == 7'b0010011); 
+    // wire isBranch  =  (instr[6:0] == 7'b1100011); 
+    // wire isJALR    =  (instr[6:0] == 7'b1100111); 
+    // wire isJAL     =  (instr[6:0] == 7'b1101111); 
+    // wire isAUIPC   =  (instr[6:0] == 7'b0010111); 
+    // wire isLUI     =  (instr[6:0] == 7'b0110111);    
+    // wire isLoad    =  (instr[6:0] == 7'b0000011); 
+    // wire isStore   =  (instr[6:0] == 7'b0100011); 
+    // wire isSYSTEM  =  (instr[6:0] == 7'b1110011); 
+    // wire isEBREAK  =  (isSYSTEM && (instr[14:12] == 3'b000));
+    always @(posedge clk) begin
+        // if (isALUimm || is)
+    end
+
     logic [31:0] instr, PC = 0;
 
     // --- Lógica Auxiliar (Definida abaixo, mas usada aqui) ---

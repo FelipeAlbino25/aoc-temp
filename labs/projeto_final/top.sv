@@ -1,14 +1,9 @@
-module top #(parameter VGA_BITS = 4) (
+module top (
   input CLOCK_50, // 50MHz
   input [9:0] SW,
   output reg [9:0] LEDR,
-  output [6:0] HEX5, HEX4, HEX3, HEX2, HEX1, HEX0,
-  output [VGA_BITS-1:0] VGA_R, VGA_G, VGA_B,
-  output VGA_HS, VGA_VS,
-  output reg VGA_CLK = 0,
-  output VGA_BLANK_N, VGA_SYNC_N);
+  output [6:0] HEX5, HEX4, HEX3, HEX2, HEX1, HEX0);
 
-  wire VGA_DA; // In display area
   wire [3:0] mem_wmask;
   wire memwrite, clk, reset;
   wire [31:0] pc, instr;
@@ -17,9 +12,6 @@ module top #(parameter VGA_BITS = 4) (
   wire [ 7:0] vbyte = vaddr[1] ? (vaddr[0] ? vdata[31:24] : vdata[23:16])
                                : (vaddr[0] ? vdata[15: 8] : vdata[ 7: 0]);
   integer counter = 0; 
-  
-  always @(posedge CLOCK_50)
-    VGA_CLK <= ~VGA_CLK;
 
   always @(posedge CLOCK_50) 
       counter <= counter + 1;
@@ -30,11 +22,11 @@ module top #(parameter VGA_BITS = 4) (
   `endif
 
   // power-on reset
-
+  power_on_reset por(clk, reset);
 
   // memory-mapped i/o
   wire isIO  = addr[8]; // 0x0000_0100
-  wire isRAM = !isIO; // six seven 6 7
+  wire isRAM = !isIO; 
   localparam IO_LEDS_bit = 2; // 0x0000_0104
   localparam IO_HEX_bit  = 3; // 0x0000_0108
   reg [23:0] hex_digits; // memory-mapped I/O register for HEX
@@ -51,21 +43,10 @@ module top #(parameter VGA_BITS = 4) (
       if (addr[IO_HEX_bit])
         hex_digits <= writedata;
     end
-  wire [VGA_BITS-3:0] fill = {VGA_BITS-2{1'b0}};
-  assign VGA_R = VGA_DA ? {vbyte[5:4], fill} : 0;
-  assign VGA_G = VGA_DA ? {vbyte[3:2], fill} : 0;
-  assign VGA_B = VGA_DA ? {vbyte[1:0], fill} : 0;
-  assign VGA_BLANK_N = 1'b1;
-  assign VGA_SYNC_N  = 1'b0;
-
-  power_on_reset por(clk, reset);
     
   // microprocessor
   riscvmulti cpu(clk, reset, addr, writedata, memwrite, readdata, mem_wmask);
 
   // memory 
-  mem ram(clk, memwrite, addr, writedata, readdata, 'h200 + vaddr, vdata, mem_wmask);
-
-  // VGA controller
-  vga gpu(VGA_CLK, reset, VGA_HS, VGA_VS, VGA_DA, vaddr);
+  mem ram(clk, memwrite, addr, writedata, readdata, mem_wmask);
 endmodule
