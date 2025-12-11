@@ -1,73 +1,33 @@
-// module mem (
-//   input  logic        clk, we,
-//   input  logic [31:0] a, wd,
-//   output logic [31:0] rd,
-//   input  logic [31:0] va,
-//   output logic [31:0] vd,
-//   input               mem_rstrb,
-//   input  logic [3:0]  mem_wmask);
-
-//   // Isso define explicitamente 4 bytes por palavra.
-//   // O Quartus adora isso para inferir RAM M10K com Byte Enable.
-//   (* ramstyle = "M10K" *) logic [3:0][7:0] RAM [0:255];
-
-//   // Inicialização: Funciona porque o SystemVerilog sabe carregar
-//   // um hex de 32 bits para dentro de um array empacotado [3:0][7:0].
-//   initial begin
-//     $readmemh("riscv.hex", RAM);
-//   end
-
-//   // Endereçamento
-//   logic [7:0] word_addr_cpu;
-//   logic [7:0] word_addr_vga;
-//   assign word_addr_cpu = a[9:2]; 
-//   assign word_addr_vga = va[9:2];
-
-//   // --------------------------------------------------------
-//   // Porta A: CPU (Escrita com Byte Select Real)
-//   // --------------------------------------------------------
-//   always_ff @(posedge clk) begin
-//     if (we) begin
-//       // Agora acessamos cada byte individualmente pelo índice [0]..[3]
-//       // Isso mapeia DIRETO para o hardware da M10K.
-//       if (mem_wmask[0]) RAM[word_addr_cpu][0] <= wd[ 7: 0];
-//       if (mem_wmask[1]) RAM[word_addr_cpu][1] <= wd[15: 8];
-//       if (mem_wmask[2]) RAM[word_addr_cpu][2] <= wd[23:16];
-//       if (mem_wmask[3]) RAM[word_addr_cpu][3] <= wd[31:24];
-//     end
-    
-//     // Leitura: O cast para 32 bits é automático
-//     rd <= RAM[word_addr_cpu];
-//   end
-
-//   // --------------------------------------------------------
-//   // Porta B: VGA (Leitura Rápida)
-//   // --------------------------------------------------------
-//   always_ff @(posedge clk) begin 
-//     vd <= RAM[word_addr_vga];
-//   end
-
-// endmodule
-
 module mem (
-  input  logic        clk, we,
-  input  logic [31:0] a, wd,
-  output logic [31:0] rd,
-  input  logic  [3:0] wm); // Write Mask input
+    input  logic        clk, 
+    input  logic        we,
+    // Porta de Instruções (Apenas Leitura - PC)
+    input  logic [31:0] a_instr,
+    output logic [31:0] rd_instr,
+    // Porta de Dados (Leitura e Escrita - Load/Store)
+    input  logic [31:0] a_data,
+    input  logic [31:0] wd_data,
+    output logic [31:0] rd_data
+);
 
-  logic  [31:0] RAM [0:255];
+    // O banco de memória em si
+    logic [31:0] MEM [0:511];
 
-  initial
-    $readmemh("riscv.hex", RAM);
-
-  assign rd = RAM[a[31:2]]; // Leitura sempre retorna a palavra inteira
-
-  always_ff @(posedge clk)
-    if (we) begin
-      // Escrita byte a byte baseada na máscara
-      if (wm[0]) RAM[a[31:2]][7:0]   <= wd[7:0];
-      if (wm[1]) RAM[a[31:2]][15:8]  <= wd[15:8];
-      if (wm[2]) RAM[a[31:2]][23:16] <= wd[23:16];
-      if (wm[3]) RAM[a[31:2]][31:24] <= wd[31:24];
+    initial begin
+        $readmemh("riscv.hex", MEM);
     end
+
+    // Leitura Assíncrona 1: Instruções (Baseado no PC)
+    assign rd_instr = MEM[a_instr[31:2]];
+
+    // Leitura Assíncrona 2: Dados (Baseado no Address da ALU)
+    assign rd_data = MEM[a_data[31:2]];
+
+    // Escrita Síncrona: Apenas na porta de dados
+    always_ff @(posedge clk) begin
+        if (we) begin
+            MEM[a_data[31:2]] <= wd_data;
+        end
+    end
+
 endmodule

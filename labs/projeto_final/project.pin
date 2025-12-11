@@ -366,8 +366,8 @@ GND                          : M2        : gnd    :                   :         
 VCCA_FPLL                    : M3        : power  :                   : 2.5V    :           :                
 GND                          : M4        : gnd    :                   :         :           :                
 TDO                          : M5        : output :                   :         : 3A        :                
-RESERVED_INPUT_WITH_WEAK_PULLUP : M6        :        :                   :         : 3A        :                
-RESERVED_INPUT_WITH_WEAK_PULLUP : M7        :        :                   :         : 3A        :                
+KEY[3]                       : M6        : input  : 2.5 V             :         : 3A        : Y              
+KEY[2]                       : M7        : input  : 2.5 V             :         : 3A        : Y              
 HEX5[1]                      : M8        : output : 2.5 V             :         : 3B        : Y              
 CLOCK_50                     : M9        : input  : 2.5 V             :         : 3B        : Y              
 GND                          : M10       : gnd    :                   :         :           :                
@@ -477,7 +477,7 @@ GND                          : U3        : gnd    :                   :         
 GND                          : U4        : gnd    :                   :         :           :                
 GND                          : U5        : gnd    :                   :         :           :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : U6        :        :                   :         : 3A        :                
-RESERVED_INPUT_WITH_WEAK_PULLUP : U7        :        :                   :         : 3A        :                
+KEY[0]                       : U7        : input  : 2.5 V             :         : 3A        : Y              
 RESERVED_INPUT_WITH_WEAK_PULLUP : U8        :        :                   :         : 3A        :                
 GND                          : U9        : gnd    :                   :         :           :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : U10       :        :                   :         : 3B        :                
@@ -523,7 +523,7 @@ TDI                          : W5        : input  :                   :         
 VCCPD3A                      : W6        : power  :                   : 2.5V    : 3A        :                
 VCC_AUX                      : W7        : power  :                   : 2.5V    :           :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : W8        :        :                   :         : 3A        :                
-RESERVED_INPUT_WITH_WEAK_PULLUP : W9        :        :                   :         : 3A        :                
+KEY[1]                       : W9        : input  : 2.5 V             :         : 3A        : Y              
 VCCIO3B                      : W10       : power  :                   : 2.5V    : 3B        :                
 VCCPD3B4A                    : W11       : power  :                   : 2.5V    :           :                
 VCCPD3B4A                    : W12       : power  :                   : 2.5V    :           :                
