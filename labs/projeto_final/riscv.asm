@@ -4,7 +4,6 @@
 main:
     li s0, 0x204        # Endereço dos LEDs (LEDR)
     li s1, 0x210        # Endereço das Chaves (KEY)
-    li s2, 0x208        # Endereço dos Displays (HEX)
     
     # --- Inicialização ---
     li a0, 1            # a0 mantém a posição do LED (começa em 0000000001)
@@ -13,7 +12,6 @@ main:
 loop:
     # 1. Atualiza a Saída Visual
     sw a0, 0(s0)        # Escreve o valor nos LEDs vermelhos
-    sw a0, 0(s2)        # Escreve o mesmo valor nos HEX
 
     # 2. Leitura do Input (Memory Input Map)
     lw t1, 0(s1)        # Lê o estado de todos os KEYs do endereço 0x210
@@ -26,6 +24,7 @@ loop:
 mover_esquerda:
     # move o ponto para a esquerda (multiplica por 2)
     slli a0, a0, 1   
+    # adiciona 1
     addi a0, a0, 1   
     
     # Verifica se passou do último LED

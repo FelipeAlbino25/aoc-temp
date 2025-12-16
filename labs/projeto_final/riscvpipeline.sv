@@ -1,23 +1,28 @@
 module riscvpipeline (
-    input     clk,
-    input     reset,
+  input         clk,
+    input         reset,
     output [31:0] PC,
     input  [31:0] Instr,
     output [31:0] Address,  
     output [31:0] WriteData, 
     output        MemWrite,  
     input  [31:0] ReadData,
+    
+    // --- TELEMETRIA NOVA ---
     output [8:0] jumps,
-    output [8:0] memAccess,
+    output [8:0] memAccess,     // Mantido p/ compatibilidade (soma load+store)
     output [8:0] cpuCycle,
-    output [8:0] intructions
+    output [8:0] intructions,
+    output [8:0] stallCount,    
+    output [8:0] brTaken,       
+    output [8:0] brNotTaken,    
+    output [8:0] loadCount,     
+    output [8:0] storeCount,     
+    output [8:0] flushCount,
+    output [8:0] fwdCount,
+    output [8:0] aluCount  
     );
 
-    //contador de jumps - 2hex
-    //acessos a memória -2hex
-    //ciclos de cpu - 2hex
-    //numero de instruções -2hex
-    //quantidade de input/output -2hex
 
    /* The 10 "recognizers" for the 10 codeops */
    function isALUreg; input [31:0] I; isALUreg=(I[6:0]==7'b0110011); endfunction
@@ -327,45 +332,116 @@ module riscvpipeline (
 
 /******************************************************************************/
 
-// ==============================================================================
-    // LÓGICA DE PERFORMANCE COUNTERS (TELEMETRIA APRIMORADA)
-    // ==============================================================================
+/****** LÓGICA DE PROGRAM COUNTER *********************************************/
 
-    reg [8:0] jumpCounter;
-    reg [8:0] memAccessCounter;
-    reg [8:0] cpuCycleCounter;
-    reg [8:0] instrNumberCounter;
-    reg [8:0] userInteractionCounter;
+    reg [8:0] r_jumpCounter;
+    reg [8:0] r_memAccessCounter;
+    reg [8:0] r_cpuCycleCounter;
+    reg [8:0] r_instrNumberCounter;
+    reg [8:0] r_stallCounter;
+    reg [8:0] r_brTakenCounter;
+    reg [8:0] r_brNotTakenCounter;
+    reg [8:0] r_loadCounter;
+    reg [8:0] r_storeCounter;
+    reg [8:0] r_flushCounter;
+    reg [8:0] r_fwdCounter;
+    reg [8:0] r_aluCounter;
 
-    assign jumps        = jumpCounter;
-    assign memAccess    = memAccessCounter;
-    assign cpuCycle     = cpuCycleCounter;
-    assign intructions  = instrNumberCounter;
+    // Associações de saída
+    assign jumps        = r_jumpCounter;
+    assign memAccess    = r_memAccessCounter;
+    assign cpuCycle     = r_cpuCycleCounter;
+    assign intructions  = r_instrNumberCounter;
+    assign stallCount   = r_stallCounter;
+    assign brTaken      = r_brTakenCounter;
+    assign brNotTaken   = r_brNotTakenCounter;
+    assign loadCount    = r_loadCounter;
+    assign storeCount   = r_storeCounter;
+    assign flushCount = r_flushCounter;
+    assign fwdCount = r_fwdCounter;
+    assign aluCount = r_aluCounter;
+
+
+
 
     always @(posedge clk) begin
         if (reset) begin
-            jumpCounter            <= 0;
-            memAccessCounter       <= 0;
-            cpuCycleCounter        <= 0;
-            instrNumberCounter     <= 0;
+            r_jumpCounter        <= 0;
+            r_memAccessCounter   <= 0;
+            r_cpuCycleCounter    <= 0;
+            r_instrNumberCounter <= 0;
+            r_stallCounter       <= 0;
+            r_brTakenCounter     <= 0;
+            r_brNotTakenCounter  <= 0;
+            r_loadCounter        <= 0;
+            r_storeCounter       <= 0;
+            r_flushCounter       <= 0;
+            r_fwdCounter         <= 0;
+            r_aluCounter         <= 0;
         end else begin
-            // 1. Contador de Ciclos
-            cpuCycleCounter <= cpuCycleCounter + 1;
+            // 1. Contador de Ciclos (Sempre incrementa)
+            r_cpuCycleCounter <= r_cpuCycleCounter + 1;
 
-            // 2. Contador de Jumps
+            // 2. Contador de Jumps (JAL, JALR ou Branch Tomado)
             if (E_JumpOrBranch) 
-                jumpCounter <= jumpCounter + 1;
+                r_jumpCounter <= r_jumpCounter + 1;
 
-            // 3. Contador de Instruções (Ignora NOPs/Bolhas)
+            // 3. Contador de Instruções (Instruções que saíram do Execute validamente)
             if (EM_instr != NOP)
-                instrNumberCounter <= instrNumberCounter + 1;
+                r_instrNumberCounter <= r_instrNumberCounter + 1;
 
-            // 4. Acessos à Memória (Loads/Stores reais)
-            if ((isLoad(MW_instr) || isStore(MW_instr)) && MW_instr != NOP)
-                memAccessCounter <= memAccessCounter + 1;
+            // 4. Stalls 
+            if (stall) 
+                r_stallCounter <= r_stallCounter + 1;
+
+            // 5. Branches (Taken vs Not Taken)
+            // isBranch verifica se é BEQ, BNE, BLT...
+            if (isBranch(DE_instr) && DE_instr != NOP && !stall) begin
+                if (E_takeBranch)
+                    r_brTakenCounter <= r_brTakenCounter + 1;
+                else
+                    r_brNotTakenCounter <= r_brNotTakenCounter + 1;
+            end
+
+            // 6. Loads e Stores (Separados)
+            // Usamos MW_instr para garantir que a instrução chegou à memória/WB
+            if (MW_instr != NOP) begin
+                if (isLoad(MW_instr))
+                    r_loadCounter <= r_loadCounter + 1;
+                
+                if (isStore(MW_instr))
+                    r_storeCounter <= r_storeCounter + 1;
+                
+                if (isLoad(MW_instr) || isStore(MW_instr))
+                    r_memAccessCounter <= r_memAccessCounter + 1;
+            end
+
+            // 7. Flush
+            // Usamos o e_flush que já estava disponibilizado no riscv pipeline
+            if (e_flush) begin
+               r_flushCounter <= r_flushCounter + 1;
+            end
+
+            // 8. Forwarding
+            // Verifica se houve forwarding em A OU em B na instrução atual
+            // (forward != 00 significa que houve bypass)
+            // Importante: Checar se não é NOP para não contar lixo durante bolhas
+            if ((forwardA != 2'b00 || forwardB != 2'b00) && EM_instr != NOP)begin
+               r_fwdCounter <= r_fwdCounter + 1;
+            end
+
+            // 9. ALU Operations
+            // Conta se for R-Type (ADD, SUB...) ou I-Type (ADDI, ANDI...)
+            // Verifica no estágio MEM ou WB para garantir que a instrução completou
+            if ((isALUreg(MW_instr) || isALUimm(MW_instr)) && MW_instr != NOP)begin
+               r_aluCounter <= r_aluCounter + 1;
+
+            end
+            
         end
     end
 
+    //Resto do código do menotti
    always @(posedge clk) begin
       if (halt) begin
          $writememh("regs.out", RegisterBank);

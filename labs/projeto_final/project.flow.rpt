@@ -1,5 +1,5 @@
 Flow report for project
-Thu Dec 11 11:42:37 2025
+Tue Dec 16 13:42:48 2025
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -40,15 +40,15 @@ applicable agreement for further details.
 +---------------------------------------------------------------------------------------+
 ; Flow Summary                                                                          ;
 +-------------------------------------+-------------------------------------------------+
-; Flow Status                         ; Successful - Thu Dec 11 11:42:37 2025           ;
+; Flow Status                         ; Successful - Tue Dec 16 13:42:10 2025           ;
 ; Quartus II 64-Bit Version           ; 13.0.1 Build 232 06/12/2013 SP 1 SJ Web Edition ;
 ; Revision Name                       ; project                                         ;
 ; Top-level Entity Name               ; top                                             ;
 ; Family                              ; Cyclone V                                       ;
 ; Device                              ; 5CEBA4F23C7                                     ;
 ; Timing Models                       ; Final                                           ;
-; Logic utilization (in ALMs)         ; 4,348 / 18,480 ( 24 % )                         ;
-; Total registers                     ; 8852                                            ;
+; Logic utilization (in ALMs)         ; 4,418 / 18,480 ( 24 % )                         ;
+; Total registers                     ; 8939                                            ;
 ; Total pins                          ; 67 / 224 ( 30 % )                               ;
 ; Total virtual pins                  ; 0                                               ;
 ; Total block memory bits             ; 18,432 / 3,153,920 ( < 1 % )                    ;
@@ -69,7 +69,7 @@ applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 12/11/2025 11:40:01 ;
+; Start date & time ; 12/16/2025 13:39:56 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; project             ;
 +-------------------+---------------------+
@@ -80,34 +80,36 @@ applicable agreement for further details.
 +-----------------------+---------------------------------+---------------+-------------+------------+
 ; Assignment Name       ; Value                           ; Default Value ; Entity Name ; Section Id ;
 +-----------------------+---------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID ; 171983378105052.176546400102000 ; --            ; --          ; --         ;
+; COMPILER_SIGNATURE_ID ; 171983378104431.176590319612456 ; --            ; --          ; --         ;
 ; FITTER_EFFORT         ; Fast Fit                        ; Auto Fit      ; --          ; --         ;
 ; FIT_ONLY_ONE_ATTEMPT  ; On                              ; Off           ; --          ; --         ;
 ; TOP_LEVEL_ENTITY      ; top                             ; project       ; --          ; --         ;
 +-----------------------+---------------------------------+---------------+-------------+------------+
 
 
-+--------------------------------------------------------------------------------------------------------------------------+
-; Flow Elapsed Time                                                                                                        ;
-+----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
-+----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:17     ; 1.0                     ; 4735 MB             ; 00:00:20                           ;
-; Fitter               ; 00:02:07     ; 1.0                     ; 5815 MB             ; 00:02:28                           ;
-; Assembler            ; 00:00:08     ; 1.0                     ; 4779 MB             ; 00:00:07                           ;
-; Total                ; 00:02:32     ; --                      ; --                  ; 00:02:55                           ;
-+----------------------+--------------+-------------------------+---------------------+------------------------------------+
++-------------------------------------------------------------------------------------------------------------------------------+
+; Flow Elapsed Time                                                                                                             ;
++---------------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
++---------------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Analysis & Synthesis      ; 00:00:17     ; 1.0                     ; 4750 MB             ; 00:00:18                           ;
+; Fitter                    ; 00:01:45     ; 1.0                     ; 5887 MB             ; 00:01:52                           ;
+; Assembler                 ; 00:00:08     ; 1.0                     ; 4776 MB             ; 00:00:07                           ;
+; TimeQuest Timing Analyzer ; 00:00:38     ; 1.0                     ; 5373 MB             ; 00:00:37                           ;
+; Total                     ; 00:02:48     ; --                      ; --                  ; 00:02:54                           ;
++---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
-+-----------------------------------------------------------------------------------+
-; Flow OS Summary                                                                   ;
-+----------------------+------------------+-----------+------------+----------------+
-; Module Name          ; Machine Hostname ; OS Name   ; OS Version ; Processor type ;
-+----------------------+------------------+-----------+------------+----------------+
-; Analysis & Synthesis ; CP-DK-201562     ; Windows 7 ; 6.2        ; x86_64         ;
-; Fitter               ; CP-DK-201562     ; Windows 7 ; 6.2        ; x86_64         ;
-; Assembler            ; CP-DK-201562     ; Windows 7 ; 6.2        ; x86_64         ;
-+----------------------+------------------+-----------+------------+----------------+
++----------------------------------------------------------------------------------------+
+; Flow OS Summary                                                                        ;
++---------------------------+------------------+-----------+------------+----------------+
+; Module Name               ; Machine Hostname ; OS Name   ; OS Version ; Processor type ;
++---------------------------+------------------+-----------+------------+----------------+
+; Analysis & Synthesis      ; CP-DK-201563     ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; CP-DK-201563     ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; CP-DK-201563     ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; CP-DK-201563     ; Windows 7 ; 6.2        ; x86_64         ;
++---------------------------+------------------+-----------+------------+----------------+
 
 
 ------------
@@ -116,6 +118,7 @@ applicable agreement for further details.
 quartus_map --read_settings_files=on --source="*.sv *.v" project
 quartus_fit --part=5CEBA4F23C7 --effort=fast --one_fit_attempt=on --read_settings_files=on project
 quartus_asm project
+quartus_sta project
 
 
 
