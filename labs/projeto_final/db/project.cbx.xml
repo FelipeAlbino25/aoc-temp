@@ -1,8 +1,11 @@
 <?xml version="1.0" ?>
 <LOG_ROOT>
 	<PROJECT NAME="project">
+		<CBX_INST_ENTRY INSTANCE_NAME="|top|lpm_divide:Div1" CBX_FILE_NAME="lpm_divide_ddm.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|top|lpm_divide:Mod0" CBX_FILE_NAME="lpm_divide_g5m.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|top|riscvpipeline:cpu|altsyncram:RegisterBank_rtl_1" CBX_FILE_NAME="altsyncram_u2n1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|top|lpm_divide:Div0" CBX_FILE_NAME="lpm_divide_ddm.tdf"/>
 		<CBX_INST_ENTRY INSTANCE_NAME="|top|mem:ram|altsyncram:MEM_rtl_0" CBX_FILE_NAME="altsyncram_fom1.tdf"/>
 		<CBX_INST_ENTRY INSTANCE_NAME="|top|riscvpipeline:cpu|altsyncram:RegisterBank_rtl_0" CBX_FILE_NAME="altsyncram_u2n1.tdf"/>
-		<CBX_INST_ENTRY INSTANCE_NAME="|top|riscvpipeline:cpu|altsyncram:RegisterBank_rtl_1" CBX_FILE_NAME="altsyncram_u2n1.tdf"/>
 	</PROJECT>
 </LOG_ROOT>

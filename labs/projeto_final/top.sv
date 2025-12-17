@@ -24,19 +24,25 @@ module top(
 
    wire [8:0] jumpCounter;
    wire [8:0] memAccessCounter;
-   wire [8:0] cpuCycleCounter;
-   wire [8:0] instrNumberCounter;
+   wire [63:0] cpuCycleCounter;
+   wire [63:0] instrNumberCounter;
    wire [8:0] stallCounter;      
    wire [8:0] brTakenCounter;    
    wire [8:0] brNotTakenCounter; 
    wire [8:0] loadCounter;       
    wire [8:0] storeCounter;      
-
-   reg [8:0] userInteractionCounter; // Calculado aqui no top
-
    wire [8:0] flushCounter;
-    wire [8:0] fwdCounter;
-    wire [8:0] aluCounter;
+   wire [8:0] fwdCounter;
+   wire [8:0] aluCounter;
+
+  // calculados no top 
+  //  parte inteira do CPI
+  wire [63:0] cpi_inteiro = (instrNumberCounter > 0) ? (cpuCycleCounter / instrNumberCounter) : 0;
+  wire [63:0] resto = (instrNumberCounter > 0) ? (cpuCycleCounter % instrNumberCounter) : 0;
+  //  parte decimal do CPI
+  wire [63:0] cpi_decimal = (instrNumberCounter > 0) ? (resto * 16 / instrNumberCounter) : 0;
+
+  reg [8:0] userInteractionCounter; 
 
   // PROCESSADOR PIPELINE
   riscvpipeline cpu(
@@ -79,7 +85,7 @@ module top(
     .rd_data(MEM_readdata)
   );
 
- reg prev_reset;
+  reg prev_reset;
   reg prev_key1;
 
   always @(posedge clk) begin
@@ -110,12 +116,13 @@ module top(
         // HEX3/2: Instruções Totais
         // HEX1/0: Interações do Usuário
         2'b00: begin
-            valorHex2 = cpuCycleCounter;
-            valorHex1 = instrNumberCounter;
-            valorHex0 = userInteractionCounter;
+            valorHex2 = cpuCycleCounter[7:0];
+            valorHex1 = instrNumberCounter[7:0];
+            valorHex0 = {cpi_inteiro[3:0], cpi_decimal[3:0]};
+            // valorHex0 = userInteractionCounter;
         end
 
-        // PÁGINA 1: BRANCH PREDICTION
+        // PÁGINA 1: BRANCH 
         // HEX5/4: Jumps Totais (Incondicional + Condicional Taken)
         // HEX3/2: Branches Condicionais TOMADOS
         // HEX1/0: Branches Condicionais NÃO TOMADOS

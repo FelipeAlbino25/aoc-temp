@@ -8,19 +8,19 @@ module riscvpipeline (
     output        MemWrite,  
     input  [31:0] ReadData,
     
-    // --- TELEMETRIA NOVA ---
-    output [8:0] jumps,
-    output [8:0] memAccess,     // Mantido p/ compatibilidade (soma load+store)
-    output [8:0] cpuCycle,
-    output [8:0] intructions,
-    output [8:0] stallCount,    
-    output [8:0] brTaken,       
-    output [8:0] brNotTaken,    
-    output [8:0] loadCount,     
-    output [8:0] storeCount,     
-    output [8:0] flushCount,
-    output [8:0] fwdCount,
-    output [8:0] aluCount  
+    //  Dados de telemetria 
+    output [8:0] jumps,         //  quantidade de jumps efetuados 
+    output [8:0] memAccess,     //  quantidade de load + store
+    output [8:0] cpuCycle,      //  número de ciclos
+    output [8:0] intructions,   //  número de instruções efetuadas
+    output [8:0] stallCount,    //  quantidade de stalls
+    output [8:0] brTaken,       //  número de branchs tomadas
+    output [8:0] brNotTaken,    //  número de branchs não tomadas
+    output [8:0] loadCount,     //  número de loads
+    output [8:0] storeCount,    //  número de stores
+    output [8:0] flushCount,    //  número de flushes feitos
+    output [8:0] fwdCount,      //  número de fowardings
+    output [8:0] aluCount       //  número de intruções R + I
     );
 
 
@@ -336,8 +336,8 @@ module riscvpipeline (
 
     reg [8:0] r_jumpCounter;
     reg [8:0] r_memAccessCounter;
-    reg [8:0] r_cpuCycleCounter;
-    reg [8:0] r_instrNumberCounter;
+    reg [63:0] r_cpuCycleCounter;
+    reg [63:0] r_instrNumberCounter;
     reg [8:0] r_stallCounter;
     reg [8:0] r_brTakenCounter;
     reg [8:0] r_brNotTakenCounter;
@@ -406,7 +406,7 @@ module riscvpipeline (
             // 6. Loads e Stores (Separados)
             // Usamos MW_instr para garantir que a instrução chegou à memória/WB
             if (MW_instr != NOP) begin
-                if (isLoad(MW_instr))
+                if (isLoad(MW_instr)) 
                     r_loadCounter <= r_loadCounter + 1;
                 
                 if (isStore(MW_instr))
